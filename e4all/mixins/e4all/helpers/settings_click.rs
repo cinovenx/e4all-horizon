@@ -11,11 +11,16 @@ fn e4all_click(game: &mut crate::game::Game<'_>, mod_id: &str, button: usize) {
     }
     let _ = game;
     let mut config = crate::game::e4all::config().clone();
+    // The page leaves the offline row out while the game has no account (see
+    // `e4all_page`), so "hide the address" is button 2 then and button 3 when
+    // the offline row is there. The account is fixed at start, so the layout
+    // cannot change between building the page and this click.
+    let has_account = horizon_client::auth::current().is_some();
     match button {
         0 => config.host_enabled = !config.host_enabled,
         1 => config.prevent_pause_while_hosting = !config.prevent_pause_while_hosting,
-        2 => config.offline_mode = !config.offline_mode,
-        3 => config.hide_domain_in_chat = !config.hide_domain_in_chat,
+        2 if has_account => config.offline_mode = !config.offline_mode,
+        2 | 3 => config.hide_domain_in_chat = !config.hide_domain_in_chat,
         _ => return,
     }
     crate::game::e4all::save(&config);

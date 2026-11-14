@@ -45,6 +45,13 @@ The setting is read **while the world opens**, because that is when Horizon
 decides the LAN's online mode, and it is not read again. Close the world and
 open it once more to change it.
 
+Horizon takes the LAN's mode from the host's account: a game started with a
+Microsoft account authenticates its guests, and one started without an account
+always hosts offline (there is no session service to verify a guest with).
+So the switch is shown only when the game has an account to make the choice
+with. Without one, guests join offline anyway and the switch would have
+nothing to change; `offline_mode` then stays in the config file, unused.
+
 > **It is off by default, and while it is on it applies to every LAN world you
 > open** — not only the ones shared over the relay, and even if *Share this
 > world over the relay* is off. That is e4all's own behaviour: its switch
@@ -61,7 +68,7 @@ as you click:
 | --- | --- |
 | Share this world over the relay | Publish an address as soon as the world is shared. |
 | Keep the world ticking while hosting | e4all's `preventPauseWhileHosting`: guests are not frozen while the host has the pause menu open. |
-| Offline mode (no Mojang login for guests) | Offline mode, above. |
+| Offline mode (no Mojang login for guests) | Offline mode, above. Only shown when the game has a Microsoft account signed in; without one the LAN is offline anyway. |
 | Hide the address in chat | The address stays out of the public chat; `/e4all domain` still shows it to the player who asks. |
 
 ### Commands
@@ -252,7 +259,7 @@ declared 415; the current one declares 411 and builds on that Horizon.
 On 2026-11-14, on both revisions above, the way the launcher does it:
 
 * **The bundle is a bundle.** Horizon's own
-  `horizon_mods::index::native::Bundle::read` opens `e4all-0.1.0.hnmod`, reads
+  `horizon_mods::index::native::Bundle::read` opens `e4all-0.1.1.hnmod`, reads
   its manifest (`hooks` is 411) and all 25 files.
 * **It applies.** `horizon-mixins plan` and `apply` report `status=ok` with
   one crate, two modules and ten injections, and `apply` writes every one of
@@ -275,8 +282,13 @@ On 2026-11-14, on both revisions above, the way the launcher does it:
   files and the same SHA-256 as the published file, and every packed file is
   byte-identical to the source it came from.
 
-The game itself was not launched, and no screenshots were taken: the session
-was verified by compiling it, not by playing it. See
+The game was also launched from the staged build on 2026-11-14: the title
+screen opened, a world was opened to the LAN by `/e4all start`, the relay
+address appeared in chat and a guest joined (`oxynos`). A screenshot was taken
+of that session. The host was started without a Microsoft account, so the LAN
+was offline, and the offline-mode switch had nothing to change — the reason
+0.1.1 shows that switch only when the game has an account. An online-mode LAN
+and the switch itself were not exercised with a signed-in host. See
 [VALIDATION.md](VALIDATION.md) for the exact commands and results.
 
 ## License

@@ -46,6 +46,14 @@ flipped while a world is running takes hold the next time that world opens.
 e4all had the same rule in practice: its button was on the Open to LAN
 screen, and the mode was fixed when the world was published.
 
+Horizon also ties the online mode to the host's account: without a session
+file from the launcher, `OnlineMode::lan()` answers `None` and the LAN hosts
+offline whatever the switch says. The settings page therefore shows the
+switch only when the game has an account; a player playing without one is
+already hosting offline, and a switch that cannot change that would only
+promise a choice they do not have. The value stays in `config/e4all.json` and
+takes effect after the game is started with an account.
+
 The switch itself is a single `AtomicBool` beside `auth`, in Horizon's render
 crate, because that is where `auth::current` lives; the game crate sets it
 when the world opens and clears it when the world closes.

@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.1 — 2026-11-14
+
+- **The offline-mode switch is shown only when the game has a signed-in
+  account.** Horizon decides a LAN world's online mode from the host's own
+  session (`OnlineMode::lan`): a game started without one hosts offline, so
+  the switch could not change anything and looked broken — offline guests
+  joined with it off. Without an account, guests join offline regardless and
+  the page now leaves the switch out; with an account it appears as before.
+  `offline_mode` still works from `config/e4all.json`.
+
+Verified on Windows: the bundle applies and the game compiles on Horizon
+`fdc87ae` (hook points 411) and `1a62ef7` (415), and the launcher's own build
+of the 411 stage was run in the game — `/e4all start` published an address, a
+guest joined and played, and the settings page showed the three switches that
+apply without an account. Not verified: an online-mode LAN with a signed-in
+host. See `VALIDATION.md`.
+
 ## 0.1.0 — 2026-11-14
 
 First release. The host side of e4all for Horizon, as a native mod.
@@ -25,5 +42,5 @@ two live tests against the real e4mc relay pass on 2026-11-14. The bundle
 applies and the game compiles on Horizon `fdc87ae` (hook points 411) and
 `1a62ef7` (415), alone and together with the published e4mc 0.1.2. It is
 pinned to `fdc87ae` and horizon-mixins `e59da90`, and declares hook points 411
-so the launcher can build it on later Nightlies. Not verified: a full
-interactive session in the game. See `VALIDATION.md`.
+so the launcher can build it on later Nightlies. 0.1.0 was later run in the
+game; that session is what produced 0.1.1. See `VALIDATION.md`.

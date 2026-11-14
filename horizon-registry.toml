@@ -18,10 +18,14 @@ friends, and they join from a plain Minecraft 26.3 client.
   without Mojang authentication while it is hosted, so a guest with no account
   or no Microsoft login can join under any name. It is **off by default**, and
   while it is on it applies to every LAN world, not only shared ones — e4all's
-  own behaviour. It takes effect the next time a world opens.
+  own behaviour. It takes effect the next time a world opens. Horizon only
+  authenticates guests when the host itself is signed in: a game started
+  without a Microsoft account always hosts its LAN offline, so the switch is
+  shown only when the game has an account and offline guests can join either
+  way.
 - **In game settings:** Options → Mods → e4all, with switches for sharing,
-  keeping the world ticking while hosting, offline mode and hiding the address
-  in chat.
+  keeping the world ticking while hosting, offline mode (when signed in) and
+  hiding the address in chat.
 - **A hosted world keeps ticking** while the pause menu is open, so guests are
   not frozen.
 

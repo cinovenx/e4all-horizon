@@ -19,7 +19,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
 /// The version the game and the release both report.
-pub const VERSION: &str = "0.1.0";
+pub const VERSION: &str = "0.1.1";
 
 /// The config's file, in Horizon's config folder.
 const FILE: &str = "e4all.json";
