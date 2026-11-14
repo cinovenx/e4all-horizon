@@ -1,0 +1,33 @@
+e4all for Horizon
+=================
+
+This is an unofficial port. It is not e4all, and it is not made or endorsed
+by the e4all project or its authors.
+
+What it is built on:
+
+  e4all — the Java mod this ports.
+    Copyright (c) the e4all authors. MIT.
+    https://github.com/Synquox/e4all
+    e4all is a fork of e4mc.
+
+  e4mc — the mod whose relay protocol this speaks, and whose Java client the
+  Rust client here is a port of.
+    Copyright (c) vgskye and contributors. MIT.
+    https://github.com/vgskye/e4mc-minecraft-architectury
+
+  e4mc-quiclime — the relay's server side, which defines the wire format this
+  mod speaks (the control messages and their framing).
+    Copyright (c) vgskye. MIT OR Apache-2.0.
+    https://github.com/vgskye/e4mc-quiclime
+
+  Horizon — the game this mod runs in, and horizon-mixins, the tool that
+  builds native mods for it.
+    Copyright (c) the Horizon authors. MIT.
+    https://github.com/horizon-rust/horizon
+    https://github.com/horizon-rust/horizon-mixins
+
+The relay's own service (the domains, the broker and the relays) is run by
+the e4mc project; this mod is only a client of it.
+
+This port is MIT licensed; see LICENSE.

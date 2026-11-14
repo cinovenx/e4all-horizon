@@ -1,0 +1,49 @@
+name = "e4all"
+summary = "Share a Horizon LAN world over the e4mc relay without port forwarding — an unofficial e4all port for offline-friendly hosting."
+description = """
+An **unofficial** port of [e4all](https://github.com/Synquox/e4all) to
+[Horizon](https://github.com/horizon-rust/horizon), as a native mod. It is not
+made or endorsed by the e4all project or its authors.
+
+Open your Horizon LAN world to friends anywhere, **without port forwarding**.
+The mod asks the e4mc relay for a public domain, you send that domain to your
+friends, and they join from a plain Minecraft 26.3 client.
+
+- **`/e4all start`** opens the LAN itself and asks the relay for an address. The
+  address appears in chat, click to copy. `/e4all stop` closes it and keeps it
+  closed; closing the world closes it too.
+- **Opening the LAN by hand works the same:** the mod notices and publishes an
+  address for it.
+- **Friends without a Minecraft account:** with *Offline mode* on, the LAN runs
+  without Mojang authentication while it is hosted, so a guest with no account
+  or no Microsoft login can join under any name. It is **off by default**, and
+  while it is on it applies to every LAN world, not only shared ones — e4all's
+  own behaviour. It takes effect the next time a world opens.
+- **In game settings:** Options → Mods → e4all, with switches for sharing,
+  keeping the world ticking while hosting, offline mode and hiding the address
+  in chat.
+- **A hosted world keeps ticking** while the pause menu is open, so guests are
+  not frozen.
+
+Commands: `/e4all`, `/e4all status`, `/e4all start`, `/e4all stop`,
+`/e4all domain`.
+
+**The relay is a free service run by the e4mc project, not by this mod's
+author, and has no SLA.** It sees the game traffic in the clear, as any
+relay-terminated tunnel does; `relay_host` in `config/e4all.json` points the mod
+at a self-hosted [e4mc-quiclime](https://github.com/vgskye/e4mc-quiclime)
+instead. This port is the host side only: it shares a Horizon world, while
+guests use a plain Minecraft client. Voice chat through e4all's Dialtone
+peer-to-peer stack is not part of it.
+
+**Compatibility:** Minecraft/Horizon 26.3, Horizon `fdc87ae` (hook points 411)
+and horizon-mixins `e59da90`. The bundle declares hook points 411, so the
+launcher builds it on later Nightlies too; it was also checked on `1a62ef7`
+(hook points 415), alone and alongside the published e4mc 0.1.2.
+
+e4all is MIT (JustPixel_0), a fork of e4mc (MIT, vgskye and contributors); the
+relay protocol follows e4mc-quiclime (MIT OR Apache-2.0). This port is MIT and
+credits them in its NOTICE. Source: <https://github.com/cinovenx/e4all-horizon>.
+"""
+authors = ["cinovenx"]
+license = "MIT"

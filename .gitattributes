@@ -1,0 +1,4 @@
+# Sources are packed byte for byte, and the `.hnmod` hash depends on them:
+# check every text file out with LF on every platform.
+* text=auto eol=lf
+*.png binary

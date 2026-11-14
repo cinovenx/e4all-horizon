@@ -1,0 +1,151 @@
+[mod]
+id = "e4all"
+version = "0.1.0"
+priority = 100
+
+# Built and tested on this Horizon. `horizon-native.json` names the hook
+# points' version (411) the mod needs, so the launcher rewrites this pin to the
+# Horizon it builds on and the mod follows the player's Nightly.
+[compatibility]
+horizon_revision = "fdc87aecdbd116bf1e08adcd062fcbaea8c2e2ca"
+
+# The relay core: broker, QUIC control channel, Dialtone tickets and the
+# stream-to-TCP bridge. Plain Rust with its tests, none of it names a game type.
+[[crate]]
+id = "core"
+path = "core"
+
+# The session's life inside the game: config, start/stop, chat, `/e4all`.
+[[module]]
+id = "runtime"
+file = "crates/horizon-client/src/game.rs"
+name = "e4all"
+source = "runtime.rs"
+
+# The flag `auth::current` reads. It lives beside `auth`, in the render crate,
+# because a module of the game crate is not visible from there.
+# `pub`, not the default `pub(crate)`: `auth` lives in the render crate and the
+# game crate is the one that sets the flag, so a crate-private module is not
+# reachable from there.
+# Named `e4all_auth_suppress`, not `auth_suppress`: the registry builds every
+# native mod together, and another mod already owns `auth_suppress` in this
+# file. Two modules with one name in one file cannot both be inserted.
+[[module]]
+id = "e4all_auth_suppress"
+file = "crates/horizon-client-render/src/auth.rs"
+name = "e4all_auth_suppress"
+visibility = "pub"
+source = "auth_flag.rs"
+
+# Force the LAN into offline mode while a world is hosted, so friends without
+# an account can join. `auth::current` answers the account, and
+# `OnlineMode::lan()` stays offline exactly when it answers nothing; its own
+# body is `CURRENT.get().cloned()`, which a RETURN may rewrite.
+[[injection]]
+id = "offline"
+kind = "RETURN"
+target = "horizon_client_render::auth::current"
+helper = "helpers/offline.rs"
+bindings = [
+  { name = "value", ty = "Option<Arc<AuthSession>>", value = "$value" },
+]
+
+# Before the server loads its worlds: set the offline flag, because
+# `integrated_open` reads the LAN's online mode long before the first tick.
+[[injection]]
+id = "hosted"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_server_about_to_start"
+helper = "helpers/hosted.rs"
+bindings = [
+  { name = "dedicated", ty = "bool", value = "dedicated" },
+]
+
+# Every tick: follow the LAN port, and stop the relay when LAN closes.
+[[injection]]
+id = "tick"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_server_tick"
+helper = "helpers/tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "phase", ty = "crate::game::native_lifecycle::ServerTickPhase", value = "phase" },
+]
+
+# The world closing: the relay closes its connection.
+[[injection]]
+id = "lifecycle"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_world_lifecycle"
+helper = "helpers/lifecycle.rs"
+bindings = [
+  { name = "phase", ty = "crate::game::native_lifecycle::WorldPhase", value = "phase" },
+]
+
+# The pause of a hosted world: `Integrated::set_paused` is told to keep the
+# world ticking, so a guest is never frozen by the host's pause menu.
+[[injection]]
+id = "pause"
+kind = "MODIFY_VARIABLE"
+target = "horizon_client::game::integrated::Integrated::set_paused"
+variable = { name = "paused", ordinal = 0, at = "LOAD", parameter = true }
+require = 1
+ordinal = 0
+helper = "helpers/pause.rs"
+bindings = [
+  { name = "value", ty = "bool", value = "$value" },
+]
+
+# `/e4all ...` in every player's command tree, and its handler.
+[[injection]]
+id = "register"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_register_commands"
+helper = "helpers/register.rs"
+bindings = [
+  { name = "commands", ty = "&mut Vec<crate::game::native_server::NativeCommand>", value = "&mut *commands" },
+]
+
+[[injection]]
+id = "command"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_perform_command"
+helper = "helpers/command.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "player", ty = "&crate::game::native_server::NativeServerPlayer", value = "player" },
+  { name = "command", ty = "&str", value = "command" },
+  { name = "ran", ty = "&mut bool", value = "&mut *ran" },
+]
+
+# Options > Mods: e4all's own row, and the page its button opens.
+[[injection]]
+id = "list"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper = "helpers/list.rs"
+bindings = [
+  { name = "mods", ty = "&mut Vec<crate::game::native_hooks::NativeMod>", value = "&mut *mods" },
+]
+
+[[injection]]
+id = "settings"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_settings"
+helper = "helpers/settings.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "mod_id", ty = "&str", value = "mod_id" },
+  { name = "buttons", ty = "&mut Vec<String>", value = "&mut *buttons" },
+]
+
+[[injection]]
+id = "settings_click"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_settings_click"
+helper = "helpers/settings_click.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "mod_id", ty = "&str", value = "mod_id" },
+  { name = "button", ty = "usize", value = "button" },
+]

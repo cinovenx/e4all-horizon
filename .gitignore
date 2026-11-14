@@ -1,0 +1,8 @@
+# The bundle crate's own build: a native mod is built by the launcher, not
+# here, and the crate folder must not carry a lock file.
+e4all/mixins/e4all/core/target/
+e4all/mixins/e4all/core/Cargo.lock
+
+# Tools' generated files: the archive is a release artifact.
+*.hnmod
+__pycache__/
