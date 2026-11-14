@@ -67,6 +67,10 @@ The same archive was opened with Horizon's own reader,
 `horizon_mods::index::native::Bundle::read`, built from `fdc87ae`. It reported
 `read ok`, the manifest with `hooks: Some(411)`, and all 25 source files.
 
+A fresh clone of <https://github.com/cinovenx/e4all-horizon> packs to the same
+32 567 bytes and the same SHA-256, and the asset attached to release `v0.1.0`
+hashes the same too.
+
 ## Applying it to Horizon
 
 For each revision, a copy of the bundle was pinned to that revision the way the
